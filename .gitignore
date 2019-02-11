@@ -1,1 +1,4 @@
 .idea/
+output/
+./data/__pycache__
+./ABAGAIL/output
