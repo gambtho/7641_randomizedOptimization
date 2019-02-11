@@ -24,7 +24,7 @@ def run_experiment(_experiment_details, experiment, timing_key, _verbose, timing
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Prepare data for Randomized Optimization')
-    parser.add_argument('--threads', type=int, default=1, help='Number of threads (defaults to 1, -1 for auto)')
+    parser.add_argument('--threads', type=int, default=8, help='Number of threads (defaults to 1, -1 for auto)')
     parser.add_argument('--seed', type=int, help='A random seed to set, if desired')
     parser.add_argument('--dump_data', action='store_true', help='Build train/test/validate splits '
                                                                  'and save to the data folder '
@@ -46,34 +46,14 @@ if __name__ == '__main__':
 
     datasets = [
         {
-            'data': loader.StatlogVehicleData(verbose=verbose, seed=seed),
-            'name': 'statlog_vehicle',
-            'readable_name': 'Statlog Vehicle',
+            'data': loader.CarData(verbose=verbose, seed=seed),
+            'name': 'car',
+            'readable_name': 'Car Evaluation',
         },
         {
-            'data': loader.HTRU2Data(verbose=verbose, seed=seed),
-            'name': 'htru2',
-            'readable_name': 'HTRU2',
-        },
-        {
-            'data': loader.CreditApprovalData(verbose=verbose, seed=seed),
-            'name': 'credit_approval',
-            'readable_name': 'Credit Approval',
-        },
-        {
-            'data': loader.PenDigitData(verbose=verbose, seed=seed),
-            'name': 'pen_digits',
-            'readable_name': 'Handwritten Digits',
-        },
-        {
-            'data': loader.SpamData(verbose=verbose, seed=seed),
-            'name': 'spam',
-            'readable_name': 'Spam',
-        },
-        {
-            'data': loader.CreditDefaultData(verbose=verbose, seed=seed),
-            'name': 'credit_default',
-            'readable_name': 'Credit Default',
+            'data': loader.MushroomData(verbose=verbose, seed=seed),
+            'name': 'mushroom',
+            'readable_name': 'Mushroom Edibility',
         }
     ]
 
