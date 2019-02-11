@@ -270,6 +270,59 @@ class CreditApprovalData(DataLoader):
         return train_features, train_classes
 
 
+class CarData(DataLoader):
+    def __init__(self, path='data/car.csv', verbose=False, seed=1):
+        super().__init__(path, verbose, seed)
+
+    def _load_data(self):
+        self._data = pd.read_csv(self._path, header=None)
+
+    def class_column_name(self):
+        return '6'
+
+    def data_name(self):
+        return 'CartData'
+
+    def _preprocess_data(self):
+        to_encode = [0, 1, 4, 5]
+        label_encoder = preprocessing.LabelEncoder()
+
+        df = self._data[to_encode]
+        df = df.apply(label_encoder.fit_transform)
+
+        self._data = self._data.drop(to_encode, axis=1)
+        self._data = pd.concat([self._data, df], axis=1)
+
+    def pre_training_adjustment(self, train_features, train_classes):
+        return train_features, train_classes
+
+
+class MushroomData(DataLoader):
+    def __init__(self, path='data/mushroom.csv', verbose=False, seed=1):
+        super().__init__(path, verbose, seed)
+
+    def _load_data(self):
+        self._data = pd.read_csv(self._path, header=None)
+
+    def class_column_name(self):
+        return '0'
+
+    def data_name(self):
+        return 'MushroomData'
+
+    def _preprocess_data(self):
+        label_encoder = preprocessing.LabelEncoder()
+
+        df = self._data[1:]
+        df = df.apply(label_encoder.fit_transform)
+
+        self._data = self._data.drop(self._data.columns[1:], axis=1)
+        self._data = pd.concat([self._data, df], axis=1)
+
+    def pre_training_adjustment(self, train_features, train_classes):
+        return train_features, train_classes
+
+
 class PenDigitData(DataLoader):
     def __init__(self, path='data/pendigits.csv', verbose=False, seed=1):
         super().__init__(path, verbose, seed)

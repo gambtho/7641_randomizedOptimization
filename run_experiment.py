@@ -5,18 +5,18 @@ import logging
 import random as rand
 import numpy as np
 
-import loader
+from data import loader
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
-def run_experiment(experiment_detals, experiment, timing_key, verbose, timings):
+def run_experiment(_experiment_details, experiment, timing_key, _verbose, timings):
     t = datetime.now()
-    for details in experiment_detals:
+    for details in _experiment_details:
         logger.info("Running {} experiment: {}".format(timing_key, details.ds_readable_name))
-        exp = experiment(details, verbose=verbose)
+        exp = experiment(details, verbose=_verbose)
         exp.perform()
     t_d = datetime.now() - t
     timings[timing_key] = t_d.seconds
@@ -45,16 +45,16 @@ if __name__ == '__main__':
     logger.info("----------")
 
     datasets = [
-        # {
-        #     'data': loader.StatlogVehicleData(verbose=verbose, seed=seed),
-        #     'name': 'statlog_vehicle',
-        #     'readable_name': 'Statlog Vehicle',
-        # },
-        # {
-        #     'data': loader.HTRU2Data(verbose=verbose, seed=seed),
-        #     'name': 'htru2',
-        #     'readable_name': 'HTRU2',
-        # },
+        {
+            'data': loader.StatlogVehicleData(verbose=verbose, seed=seed),
+            'name': 'statlog_vehicle',
+            'readable_name': 'Statlog Vehicle',
+        },
+        {
+            'data': loader.HTRU2Data(verbose=verbose, seed=seed),
+            'name': 'htru2',
+            'readable_name': 'HTRU2',
+        },
         {
             'data': loader.CreditApprovalData(verbose=verbose, seed=seed),
             'name': 'credit_approval',
@@ -64,17 +64,17 @@ if __name__ == '__main__':
             'data': loader.PenDigitData(verbose=verbose, seed=seed),
             'name': 'pen_digits',
             'readable_name': 'Handwritten Digits',
+        },
+        {
+            'data': loader.SpamData(verbose=verbose, seed=seed),
+            'name': 'spam',
+            'readable_name': 'Spam',
+        },
+        {
+            'data': loader.CreditDefaultData(verbose=verbose, seed=seed),
+            'name': 'credit_default',
+            'readable_name': 'Credit Default',
         }
-        # {
-        #     'data': loader.SpamData(verbose=verbose, seed=seed),
-        #     'name': 'spam',
-        #     'readable_name': 'Spam',
-        # },
-        # {
-        #     'data': loader.CreditDefaultData(verbose=verbose, seed=seed),
-        #     'name': 'credit_default',
-        #     'readable_name': 'Credit Default',
-        # }
     ]
 
     experiment_details = []

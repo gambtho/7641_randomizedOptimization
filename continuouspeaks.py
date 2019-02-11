@@ -2,7 +2,7 @@ import time
 
 import sys
 
-sys.path.append("./ABAGAIL.jar")
+sys.path.append("./ABAGAIL/ABAGAIL.jar")
 
 import dist.DiscreteDependencyTree as DiscreteDependencyTree
 import dist.DiscreteUniformDistribution as DiscreteUniformDistribution
@@ -69,7 +69,7 @@ for t in range(numTrials):
         score = ef.value(rhc.getOptimal())
         ef.fevals -= 1
         st = '{},{},{},{}\n'.format(i, score, times[-1], fevals)
-        print st
+        print(st)
         with open(fname, 'a') as f:
             f.write(st)
 
@@ -95,7 +95,7 @@ for t in range(numTrials):
             score = ef.value(sa.getOptimal())
             ef.fevals -= 1
             st = '{},{},{},{}\n'.format(i, score, times[-1], fevals)
-            print st
+            print(st)
             with open(fname, 'a') as f:
                 f.write(st)
 
@@ -123,7 +123,7 @@ for t in range(numTrials):
             score = ef.value(ga.getOptimal())
             ef.fevals -= 1
             st = '{},{},{},{}\n'.format(i, score, times[-1], fevals)
-            print st
+            print(st)
             with open(fname, 'a') as f:
                 f.write(st)
 
@@ -153,6 +153,6 @@ for t in range(numTrials):
             score = ef.value(mimic.getOptimal())
             ef.fevals -= 1
             st = '{},{},{},{}\n'.format(i, score, times[-1], fevals)
-            print st
+            print(st)
             with open(fname, 'a') as f:
                 f.write(st)

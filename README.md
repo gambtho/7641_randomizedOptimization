@@ -1,5 +1,8 @@
-
 # Assignment 2 - Randomized Optimization
+
+## Code from
+
+https://github.com/cmaron/CS-7641-assignments.git
 
 The code for this assignment chooses three toy problems, but there are other options available in _ABAGAIL_. 
 
