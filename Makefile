@@ -4,13 +4,13 @@ setup:
 	export JYTHON_HOME=/home/thgamble/apps/jython
 
 run-all:
-    jython NN-Backprop.py
-    jython NN-GA.py
-    jython NN-RHC.py
-    jython NN-SA.py
-    jython flipflop.py
-    jython continouspeaks.py
-    jython tsp.py
+	jython NN-Backprop.py
+	jython NN-GA.py
+	jython NN-RHC.py
+	jython NN-SA.py
+	jython flipflop.py
+	jython continouspeaks.py
+	jython tsp.py
 
 clean:
 	rm -rf ./output
