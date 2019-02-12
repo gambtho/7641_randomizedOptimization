@@ -3,7 +3,7 @@ setup:
 	python run_experiment --dump_data
 	export JYTHON_HOME=/home/thgamble/apps/jython
 
-run-all: backprop ga rhc sa flipflop continouspeaks tsp 
+run-all: backprop ga rhc sa flipflop continuouspeaks tsp 
 
 backprop:
 	jython NN-Backprop.py
@@ -20,8 +20,8 @@ sa:
 flipflop:
 	jython flipflop.py
 	
-continouspeaks:
-	jython continouspeaks.py
+continuospeaks:
+	jython continuouspeaks.py
 	
 tsp:
 	jython tsp.py
