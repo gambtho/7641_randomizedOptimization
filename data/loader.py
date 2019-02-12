@@ -128,6 +128,8 @@ class DataLoader(ABC):
         return self.features
 
     def get_classes(self, force=False):
+        print(self.classes)
+        print("___________________________")
         if self.classes is None or force:
             self.log("Pulling classes")
             self.classes = np.array(self._data.iloc[:, -1])
@@ -275,7 +277,7 @@ class CarData(DataLoader):
         super().__init__(path, verbose, seed)
 
     def _load_data(self):
-        self._data = pd.read_csv(self._path, header=None)
+        self._data = pd.read_csv(self._path)
 
     def class_column_name(self):
         return '6'
@@ -284,7 +286,7 @@ class CarData(DataLoader):
         return 'CartData'
 
     def _preprocess_data(self):
-        to_encode = [0, 1, 4, 5]
+        to_encode = ["buying", "maint", "lug_boot", "safety", "class"]
         label_encoder = preprocessing.LabelEncoder()
 
         df = self._data[to_encode]
@@ -302,22 +304,23 @@ class MushroomData(DataLoader):
         super().__init__(path, verbose, seed)
 
     def _load_data(self):
-        self._data = pd.read_csv(self._path, header=None)
+        self._data = pd.read_csv(self._path)
 
     def class_column_name(self):
-        return '0'
+        return 'class'
 
     def data_name(self):
         return 'MushroomData'
 
     def _preprocess_data(self):
-        label_encoder = preprocessing.LabelEncoder()
+        le = preprocessing.LabelEncoder()
 
-        df = self._data[1:]
-        df = df.apply(label_encoder.fit_transform)
-
-        self._data = self._data.drop(self._data.columns[1:], axis=1)
-        self._data = pd.concat([self._data, df], axis=1)
+        for column in self._data.columns:
+            if self._data[column].dtype == type(object):
+                self._data[column] = le.fit_transform(self._data[column].astype(str))
+                self._data[column] = self._data[column].astype(float)
+            elif pd.api.types.is_int64_dtype(self._data[column].dtype):
+                self._data[column] = self._data[column].astype(float)
 
     def pre_training_adjustment(self, train_features, train_classes):
         return train_features, train_classes

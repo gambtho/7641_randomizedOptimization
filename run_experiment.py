@@ -46,12 +46,12 @@ if __name__ == '__main__':
 
     datasets = [
         {
-            'data': loader.CarData(verbose=verbose, seed=seed),
+            'data': loader.CarData(verbose=True, seed=seed),
             'name': 'car',
             'readable_name': 'Car Evaluation',
         },
         {
-            'data': loader.MushroomData(verbose=verbose, seed=seed),
+            'data': loader.MushroomData(verbose=True, seed=seed),
             'name': 'mushroom',
             'readable_name': 'Mushroom Edibility',
         }
