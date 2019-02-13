@@ -32,7 +32,7 @@ Each experiment can be run as a separate script. Running the actual optimization
 the use of Jython.
 
 For the three toy problems, run:
- - continuoutpeaks.py
+ - continuouspeaks.py
  - flipflop.py
  - tsp.py
 

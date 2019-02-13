@@ -12,7 +12,7 @@ from os.path import basename
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+plt.switch_backend('agg')
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -123,7 +123,7 @@ def read_data_file(file, nn_curve=False):
     df = df.set_index('iterations')
     # Trim the nn graphs to the first 1k iterations, as after that the graphs flatten out
     if nn_curve:
-        df = df[df.index <= 2000]
+        df = df[:2000]
 
     return df
 
@@ -183,7 +183,7 @@ def plot_mimic_data(problem_name, mimic_files, output_dir, nn_curve=False):
 
             if nn_curve:
                 # For the NN problem convergence happens relatively early (except for SA)
-                main_df = main_df[main_df.index <= 500]
+                main_df = main_df[:500]
                 p = plot_data('{} - MIMIC {} {}: {} vs Iterations'.format(problem_name, samples, keep,
                                                                           y.capitalize()), main_df[y],
                               sorted(mimic_files[samples][keep].keys()),
@@ -394,7 +394,7 @@ def plot_backprop_data(problem_name, backprop_files, output_dir, nn_curve=False)
 
     if nn_curve:
         # For the NN problem convergence happens relatively early (except for SA)
-        main_df = main_df[main_df.index <= 500]
+        main_df = main_df[:500]
         p = plot_data('{} - Backprop: {} vs Iterations'.format(problem_name, y_label), main_df,
                       None, nn_curve=nn_curve,
                       y_label=y_label)
@@ -579,8 +579,8 @@ def find_best_results(base_dir, problem_name, nn_curve=False, multiple_trials=Fa
             best_value = np.max(np.max(df[['f1_tst']]))
         else:
             best_value = np.max(df['fitness'])
-
-        if best_value > files[algo]['best']:
+        # if files[algo]['best'] != 0 and best_value > files[algo]['best']:
+        if files[algo]['best'] != 0 and best_value > files[algo]['best']:
             if nn_curve:
                 files[algo]['best'] = best_value
                 files[algo]['files'] = [output_file]

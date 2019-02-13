@@ -1,7 +1,7 @@
 setup:
 	echo "source /home/thgamble/apps/miniconda3/etc/profile.d/conda.sh"
 	python run_experiment --dump_data
-	export JYTHON_HOME=/home/thgamble/apps/jython
+	echo "export JYTHON_HOME=/home/thgamble/apps/jython"
 
 run-all: backprop ga rhc sa flipflop continuouspeaks tsp 
 
@@ -25,6 +25,9 @@ continuospeaks:
 	
 tsp:
 	jython tsp.py
+
+plot:
+	python plotting.py
 
 clean:
 	rm -rf ./output
