@@ -348,7 +348,7 @@ def plot_rhc_data(problem_name, rhc_files, output_dir, nn_curve=False):
 
     if nn_curve:
         # For the NN problem convergence happens relatively early (except for SA)
-        main_df = main_df[main_df.index <= 500]
+        main_df = main_df[:500]
         p = plot_data('{} - RHC: {} vs Iterations'.format(problem_name, y_label), main_df,
                       None, nn_curve=nn_curve,
                       y_label=y_label)
@@ -423,10 +423,11 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
     output_file_name_regex = re.compile('{}_([A-Za-z]+)(.*)_LOG\.csv'.format(problem_name))
     prefixes = []
     for algo in files:
-        file = files[algo][0]
-        base_file_name = basename(file)
-        algo, _ = output_file_name_regex.search(base_file_name).groups()
-        prefixes.append(algo)
+         if(len(files[algo]) > 0):
+             file = files[algo][0]
+             base_file_name = basename(file)
+             algo, _ = output_file_name_regex.search(base_file_name).groups()
+             prefixes.append(algo)
     prefixes.sort()
 
     main_df = {}
@@ -438,9 +439,10 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
         step_df = process_step_df(dfs, graph_ys)
 
         if nn_curve:
-            df = list(dfs.values())[0]
-            df.columns = ['{}_{}'.format(algo, str(col)) for col in df.columns]
-            main_df[algo] = dfs
+            if len(dfs.values()) > 0:
+               df = list(dfs.values())[0]
+               df.columns = ['{}_{}'.format(algo, str(col)) for col in df.columns]
+               main_df[algo] = dfs
         else:
             for y in graph_ys:
                 df = step_df[y]
@@ -448,11 +450,12 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
                 main_df[y]['{}_std'.format(algo)] = np.std(df, axis=1)
 
     if nn_curve:
-        main_df = list(main_df.values())
-        main_df = [list(k.values())[0] for k in main_df]
-        main_df = reduce(lambda x, y: pd.merge(x, y, on='iterations'), main_df)
-        # For the NN problem convergence happens relatively early (except for SA)
-        main_df = main_df[main_df.index <= 500]
+        if len(main_df.values()) > 0:
+           main_df = list(main_df.values())
+           main_df = [list(k.values())[0] for k in main_df]
+           main_df = reduce(lambda x, y: pd.merge(x, y, on='iterations'), main_df)
+           # For the NN problem convergence happens relatively early (except for SA)
+           main_df = main_df[main_df.index <= 500]
     else:
         p = plot_data('{} - Best: {} vs Iterations'.format(problem_name, 'Function Evals'), main_df['fevals'],
                       prefixes, nn_curve=nn_curve, validate_only=nn_curve,
@@ -629,6 +632,7 @@ if __name__ == '__main__':
             nn_curve = problem_name == 'NN'
             best_files = the_best[problem_name]
             for algo in best_files:
+              if len(best_files[algo]) > 0:
                 file = best_files[algo][0]
                 _, params = output_file_name_regex.search(file).groups()
                 params = list(filter(None, params[0:-1].split('_')))
