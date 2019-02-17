@@ -12,7 +12,7 @@ from os.path import basename
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-plt.switch_backend('agg')
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -247,7 +247,7 @@ def plot_ga_data(problem_name, ga_files, output_dir, nn_curve=False):
             if nn_curve:
                 # For the NN problem convergence happens relatively early (except for SA)
                 main_df[mate] = reduce(lambda x, y: pd.merge(x, y, on='iterations'), main_df[mate])
-                main_df[mate] = main_df[mate][main_df[mate].index <= 500]
+                main_df[mate] = main_df[mate][:500]
                 p = plot_data('{} - GA {} {}: {} vs Iterations'.format(problem_name, pop, mate,
                                                                        y_label), main_df[mate],
                               sorted(ga_files[pop][mate].keys()),
@@ -423,11 +423,10 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
     output_file_name_regex = re.compile('{}_([A-Za-z]+)(.*)_LOG\.csv'.format(problem_name))
     prefixes = []
     for algo in files:
-         if(len(files[algo]) > 0):
-             file = files[algo][0]
-             base_file_name = basename(file)
-             algo, _ = output_file_name_regex.search(base_file_name).groups()
-             prefixes.append(algo)
+        file = files[algo][0]
+        base_file_name = basename(file)
+        algo, _ = output_file_name_regex.search(base_file_name).groups()
+        prefixes.append(algo)
     prefixes.sort()
 
     main_df = {}
@@ -439,10 +438,9 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
         step_df = process_step_df(dfs, graph_ys)
 
         if nn_curve:
-            if len(dfs.values()) > 0:
-               df = list(dfs.values())[0]
-               df.columns = ['{}_{}'.format(algo, str(col)) for col in df.columns]
-               main_df[algo] = dfs
+            df = list(dfs.values())[0]
+            df.columns = ['{}_{}'.format(algo, str(col)) for col in df.columns]
+            main_df[algo] = dfs
         else:
             for y in graph_ys:
                 df = step_df[y]
@@ -450,12 +448,11 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
                 main_df[y]['{}_std'.format(algo)] = np.std(df, axis=1)
 
     if nn_curve:
-        if len(main_df.values()) > 0:
-           main_df = list(main_df.values())
-           main_df = [list(k.values())[0] for k in main_df]
-           main_df = reduce(lambda x, y: pd.merge(x, y, on='iterations'), main_df)
-           # For the NN problem convergence happens relatively early (except for SA)
-           main_df = main_df[main_df.index <= 500]
+        main_df = list(main_df.values())
+        main_df = [list(k.values())[0] for k in main_df]
+        main_df = reduce(lambda x, y: pd.merge(x, y, on='iterations'), main_df)
+        # For the NN problem convergence happens relatively early (except for SA)
+        main_df = main_df[main_df.index <= 500]
     else:
         p = plot_data('{} - Best: {} vs Iterations'.format(problem_name, 'Function Evals'), main_df['fevals'],
                       prefixes, nn_curve=nn_curve, validate_only=nn_curve,
@@ -582,8 +579,8 @@ def find_best_results(base_dir, problem_name, nn_curve=False, multiple_trials=Fa
             best_value = np.max(np.max(df[['f1_tst']]))
         else:
             best_value = np.max(df['fitness'])
-        # if files[algo]['best'] != 0 and best_value > files[algo]['best']:
-        if files[algo]['best'] != 0 and best_value > files[algo]['best']:
+
+        if best_value > files[algo]['best']:
             if nn_curve:
                 files[algo]['best'] = best_value
                 files[algo]['files'] = [output_file]
@@ -632,7 +629,6 @@ if __name__ == '__main__':
             nn_curve = problem_name == 'NN'
             best_files = the_best[problem_name]
             for algo in best_files:
-              if len(best_files[algo]) > 0:
                 file = best_files[algo][0]
                 _, params = output_file_name_regex.search(file).groups()
                 params = list(filter(None, params[0:-1].split('_')))
@@ -643,7 +639,7 @@ if __name__ == '__main__':
 
                 df = read_data_file(file, nn_curve=nn_curve)
                 if nn_curve:
-                    df = df[df.index <= 500]
+                    df = df[:500]
 
                 if nn_curve:
                     max_index = df['f1_tst'].idxmax()
