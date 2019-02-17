@@ -450,9 +450,9 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
     if nn_curve:
         main_df = list(main_df.values())
         main_df = [list(k.values())[0] for k in main_df]
-        main_df = reduce(lambda x, y: pd.merge(x, y, on='iterations'), main_df)
+        # main_df = reduce(lambda x, y: pd.merge(x, y, on='iterations'), main_df)
         # For the NN problem convergence happens relatively early (except for SA)
-        main_df = main_df[main_df.index <= 500]
+        main_df = main_df[:500]
     else:
         p = plot_data('{} - Best: {} vs Iterations'.format(problem_name, 'Function Evals'), main_df['fevals'],
                       prefixes, nn_curve=nn_curve, validate_only=nn_curve,
@@ -462,12 +462,10 @@ def plot_best_curves(problem_name, files, output_dir, nn_curve=False):
             format='png', dpi=150)
         main_df = main_df['fitness']
 
-    p = plot_data('{} - Best: {} vs Iterations'.format(problem_name, y_label), main_df,
+        p = plot_data('{} - Best: {} vs Iterations'.format(problem_name, y_label), main_df,
                   prefixes, nn_curve=nn_curve, validate_only=nn_curve,
                   y_label=y_label)
-    p.savefig(
-        '{}/{}/Best_{}.png'.format(output_dir, problem_name, 'Fitness'),
-        format='png', dpi=150)
+        p.savefig('{}/{}/Best_{}.png'.format(output_dir, problem_name, 'Fitness'), format='png', dpi=150)
 
 
 def read_and_plot_test_output(base_dir, output_dir, problem_name, multiple_trials=True, nn_curve=False):
@@ -580,7 +578,7 @@ def find_best_results(base_dir, problem_name, nn_curve=False, multiple_trials=Fa
         else:
             best_value = np.max(df['fitness'])
 
-        if best_value > files[algo]['best']:
+        if files[algo]['best'] == 0 or best_value > files[algo]['best']:
             if nn_curve:
                 files[algo]['best'] = best_value
                 files[algo]['files'] = [output_file]
@@ -641,12 +639,12 @@ if __name__ == '__main__':
                 if nn_curve:
                     df = df[:500]
 
-                if nn_curve:
-                    max_index = df['f1_tst'].idxmax()
-                    best = df.ix[max_index]
-                    best_iterations = max_index
-                    best_value = best['f1_tst']
-                    best_time = best['elapsed']
+                # if nn_curve:
+                #     max_index = df['f1_tst'].idxmax()
+                #     best = df.ix[max_index]
+                #     best_iterations = max_index
+                #     best_value = best['f1_tst']
+                #     best_time = best['elapsed']
                 else:
                     max_index = df['fitness'].idxmax()
                     best = df.ix[max_index]
@@ -655,5 +653,5 @@ if __name__ == '__main__':
                     best_time = best['time']
                     best_fevals = best['fevals']
 
-                f.write('{},{},"{}",{},{},{},{}\n'.format(problem_name, algo, params, best_value, best_iterations,
+                    f.write('{},{},"{}",{},{},{},{}\n'.format(problem_name, algo, params, best_value, best_iterations,
                                                        best_time, best_fevals))
