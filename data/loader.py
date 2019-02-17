@@ -283,7 +283,7 @@ class CarData(DataLoader):
         return '6'
 
     def data_name(self):
-        return 'CartData'
+        return 'CarData'
 
     def _preprocess_data(self):
         to_encode = ["buying", "maint", "lug_boot", "safety", "class"]

@@ -3,7 +3,9 @@ setup:
 	python run_experiment --dump_data
 	echo "export JYTHON_HOME=/home/thgamble/apps/jython"
 
-run-all: backprop ga rhc sa flipflop continuouspeaks tsp 
+run-base: setup backprop ga rhc sa 
+
+run-tail: flipflop continuouspeaks tsp 
 
 backprop:
 	jython NN-Backprop.py
@@ -20,7 +22,7 @@ sa:
 flipflop:
 	jython flipflop.py
 	
-continuospeaks:
+continuouspeaks:
 	jython continuouspeaks.py
 	
 tsp:
@@ -35,5 +37,3 @@ clean:
 help:
 	cat Makefile
 
-sep:
-	@echo "---------------------------------------------------"
